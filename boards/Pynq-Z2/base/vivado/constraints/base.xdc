@@ -116,7 +116,7 @@ set_property -dict {PACKAGE_PIN G20 IOSTANDARD LVCMOS33} [get_ports Vaux13_v_n]
 set_property -dict {PACKAGE_PIN G19 IOSTANDARD LVCMOS33} [get_ports Vaux13_v_p]
 
 ## HDMI signals
-create_clock -period 8.334 -waveform {0.000 4.167} [get_ports hdmi_in_clk_p]
+create_clock -period 8.33333333 -waveform {0.000 4.16666667} [get_ports hdmi_in_clk_p]
 
 ## HDMI RX
 set_property -dict {PACKAGE_PIN P19 IOSTANDARD TMDS_33} [get_ports hdmi_in_clk_n]
