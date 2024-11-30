@@ -3773,7 +3773,7 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets iop_pmoda_pmoda_gpio] [get_bd_in
   connect_bd_net -net video_dout [get_bd_pins concat_interrupts/In0] [get_bd_pins video/video_irq]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins ps7_0/IRQ_F2P] [get_bd_pins xlconcat_0/dout]
   for {set i 1} {$i < 16} {incr i} {
-      connect_bd_net -net unused_irq_$i [get_bd_pins unused_irq_$i] [get_bd_pins xlconcat_0/In$i]
+      connect_bd_net -net unused_irq_$i [get_bd_pins unused_irq_$i/dout] [get_bd_pins xlconcat_0/In$i]
   }
 
   # group xlconcat_0 and constants
@@ -3871,7 +3871,7 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets iop_pmoda_pmoda_gpio] [get_bd_in
   for {set i 1} {$i < 16} {incr i} {
       lappend intVar In$i {}
   }
-  set_property PFM.IRQ $intVar [get_bd_cells /xlconcat_0]
+  set_property PFM.IRQ $intVar [get_bd_cells /system_irq_concat/xlconcat_0]
 
   validate_bd_design
   save_bd_design
