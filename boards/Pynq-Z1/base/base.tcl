@@ -3648,6 +3648,15 @@ proc create_root_design { parentCell } {
    CONFIG.NUM_PORTS {16} \
  ] $xlconcat_0
 
+  # Create instances: unused_irq_X, and set properties
+  for {set i 1} {$i < 16} {incr i} {
+      set unused_irq [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 unused_irq_$i ]
+      set_property -dict [ list \
+       CONFIG.CONST_VAL {0} \
+       CONFIG.CONST_WIDTH {1} \
+     ] $unused_irq
+  }
+
   # Create interface connections
   connect_bd_intf_net -intf_net S00_AXI_2 [get_bd_intf_pins axi_interconnect_0/S00_AXI] [get_bd_intf_pins iop_pmoda/M_AXI]
   connect_bd_intf_net -intf_net S01_AXI_1 [get_bd_intf_pins axi_mem_intercon/S01_AXI] [get_bd_intf_pins trace_analyzer_arduino/M_AXI]
@@ -3763,6 +3772,12 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets iop_pmoda_pmoda_gpio] [get_bd_in
   connect_bd_net -net trace_analyzer_pmoda_s2mm_introut [get_bd_pins concat_interrupts/In1] [get_bd_pins trace_analyzer_pmoda/s2mm_introut]
   connect_bd_net -net video_dout [get_bd_pins concat_interrupts/In0] [get_bd_pins video/video_irq]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins ps7_0/IRQ_F2P] [get_bd_pins xlconcat_0/dout]
+  for {set i 1} {$i < 16} {incr i} {
+      connect_bd_net -net unused_irq_$i [get_bd_pins unused_irq_$i] [get_bd_pins xlconcat_0/In$i]
+  }
+
+  # group xlconcat_0 and constants
+  group_bd_cells system_irq_concat [get_bd_cells unused_irq_*] [get_bd_cells xlconcat_0]
 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces address_remap_0/M_AXI_out] [get_bd_addr_segs ps7_0/S_AXI_GP0/GP0_DDR_LOWOCM] -force
